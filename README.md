@@ -5,10 +5,10 @@ Türkçe ve gerçekçi bir hastane bilgi yönetim sistemi üzerinden PostgreSQL 
 ## Hızlı başlangıç
 
 ```bash
-docker compose up -d
+./setup.sh
 ```
 
-İlk çalıştırmada image oluşturulur, migration'lar uygulanır ve küçük eğitim veri seti otomatik üretilir. Uygulama hazır olduğunda:
+Tek gereksinim çalışan bir Docker kurulumudur. Script `.env` dosyasını oluşturur, güvenli bir Laravel uygulama anahtarı üretir, Docker image'larını hazırlar, migration'ları uygular ve küçük eğitim veri setini otomatik üretir. Uygulama hazır olduğunda:
 
 - Uygulama: http://localhost:8090
 - PostgreSQL: `localhost:54329`
@@ -20,6 +20,8 @@ Durumu izlemek için:
 docker compose ps
 docker compose logs -f app
 ```
+
+Script güvenle tekrar çalıştırılabilir; mevcut `.env` dosyası ve PostgreSQL verileri korunur.
 
 ## Veri profilleri
 
