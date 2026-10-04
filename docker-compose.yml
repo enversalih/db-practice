@@ -1,0 +1,54 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${APP_PORT:-8090}:80"
+    environment:
+      APP_NAME: "Relasyon Laboratuvarı"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: "http://localhost:${APP_PORT:-8090}"
+      APP_KEY: "base64:PEVJ4gJXCxdyE7VzEy+ywifLClAzYPuRZ8p+dKqj7aU="
+      LOG_CHANNEL: stderr
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: hospital_lab
+      DB_USERNAME: hospital
+      DB_PASSWORD: hospital
+      SESSION_DRIVER: cookie
+      CACHE_STORE: array
+      QUEUE_CONNECTION: sync
+      DATASET_PROFILE: "${DATASET_PROFILE:-small}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/up"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: hospital_lab
+      POSTGRES_USER: hospital
+      POSTGRES_PASSWORD: hospital
+      TZ: Europe/Istanbul
+    ports:
+      - "${DB_EXPOSE_PORT:-54329}:5432"
+    volumes:
+      - hospital_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hospital -d hospital_lab"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    restart: unless-stopped
+
+volumes:
+  hospital_pgdata:
